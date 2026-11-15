@@ -1,6 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import { render } from "@testing-library/react";
-import { CommandContext, completions, runCommand } from "./commands";
+import {
+  CommandContext,
+  completions,
+  getCompletions,
+  runCommand,
+} from "./commands";
+import { parsePortfolio } from "../../../lib/content/schema";
+import portfolio from "../../../../data/portfolio.json";
 import { createContent } from "../../../../test/fixtures";
 
 const createContext = (): CommandContext => ({
@@ -54,6 +61,34 @@ describe("terminal commands", () => {
     const text = textOf(runCommand("contact", createContext()));
     expect(text).toContain("github");
     expect(text).not.toContain("linkedin");
+  });
+
+  it("omits unavailable contact and CV surfaces", () => {
+    const context = createContext();
+    delete context.content.profile.email;
+    delete context.content.profile.cv;
+    expect(textOf(runCommand("contact", context))).not.toContain("email");
+    expect(textOf(runCommand("ls", context))).not.toContain("CV.pdf");
+    expect(getCompletions(context.content)).not.toContain("open cv");
+    expect(getCompletions(context.content)).not.toContain("open mail");
+    expect(runCommand("open cv", context)).toContain("does not exist");
+    expect(context.openApp).not.toHaveBeenCalled();
+  });
+
+  it("opens each project in Finder and autocompletes project IDs", () => {
+    const context = { ...createContext(), content: parsePortfolio(portfolio) };
+    for (const project of context.content.projects) {
+      expect(runCommand(`open ${project.id}`, context)).toBe(
+        `Opening ${project.name}...`
+      );
+      expect(context.openApp).toHaveBeenLastCalledWith(
+        "finder",
+        `project:${project.id}`
+      );
+      expect(getCompletions(context.content)).toContain(`open ${project.id}`);
+    }
+    expect(context.openUrl).not.toHaveBeenCalled();
+    expect(getCompletions(context.content)).not.toContain("open cv");
   });
 
   it("clears and exits through the context", () => {

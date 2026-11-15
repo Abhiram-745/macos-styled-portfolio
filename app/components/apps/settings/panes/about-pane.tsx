@@ -13,7 +13,7 @@ const AboutPane: React.FC = () => {
       <div className="flex flex-col items-center gap-2 py-4">
         <Avatar className="w-20 h-20 text-30" />
         <div className="text-20 font-bold">{profile.name}</div>
-        <div className="text-black/50 dark:text-white/50">{profile.email}</div>
+        <div className="text-black/50 dark:text-white/50">{profile.role}</div>
       </div>
       <SettingsGroup>
         <SettingsRow label="Name">
@@ -31,12 +31,23 @@ const AboutPane: React.FC = () => {
             <a
               href={profile.links.repository}
               target="_blank"
+              rel="noopener noreferrer"
               className="text-[#0a84ff]"
             >
               View on GitHub
             </a>
           </SettingsRow>
         )}
+        <SettingsRow label="Template">
+          <a
+            href="https://rosh.sh/work/macos-portfolio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#0a84ff]"
+          >
+            Roshish Shrestha
+          </a>
+        </SettingsRow>
       </SettingsGroup>
     </>
   );

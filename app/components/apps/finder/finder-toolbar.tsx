@@ -5,6 +5,7 @@ import { FinderView } from "./navigation";
 
 interface FinderToolbarProps {
   title: string;
+  isProject?: boolean;
   canGoBack: boolean;
   canGoForward: boolean;
   onBack: () => void;
@@ -17,6 +18,7 @@ interface FinderToolbarProps {
 
 const FinderToolbar: React.FC<FinderToolbarProps> = ({
   title,
+  isProject,
   canGoBack,
   canGoForward,
   onBack,
@@ -30,7 +32,7 @@ const FinderToolbar: React.FC<FinderToolbarProps> = ({
 
   return (
     <Toolbar
-      className="max-sm:pl-[92px]"
+      className="max-sm:pl-[132px] max-sm:gap-1 [&>div.text-15]:min-w-0"
       title={title}
       leading={
         <ToolbarGroup>
@@ -40,9 +42,10 @@ const FinderToolbar: React.FC<FinderToolbarProps> = ({
             disabled={!canGoBack}
             onClick={onBack}
           />
-          <div className="w-px h-4 bg-black/10 dark:bg-white/15" />
+          <div className="w-px h-4 bg-black/10 dark:bg-white/15 max-sm:hidden" />
           <ToolbarButton
             symbol="chevron-right"
+            className="max-sm:hidden"
             title="Forward"
             disabled={!canGoForward}
             onClick={onForward}
@@ -50,52 +53,54 @@ const FinderToolbar: React.FC<FinderToolbarProps> = ({
         </ToolbarGroup>
       }
       trailing={
-        <>
-          <ToolbarGroup className="hidden md:flex">
-            <ToolbarButton
-              symbol="square-grid-2x2"
-              title="Icons"
-              isActive={view === "grid"}
-              onClick={() => onViewChange("grid")}
-            />
-            <ToolbarButton
-              symbol="list-bullet"
-              title="List"
-              isActive={view === "list"}
-              onClick={() => onViewChange("list")}
-            />
-          </ToolbarGroup>
-          {isSearching ? (
-            <ToolbarGroup className="px-3 gap-1.5 ring-[3px] ring-[#0a84ff]/50">
-              <Symbol
-                name="magnifyingglass"
-                className="w-3.5 h-3.5 opacity-60"
-              />
-              <input
-                autoFocus
-                aria-label="Search"
-                value={search}
-                onChange={(e) => onSearchChange(e.target.value)}
-                onBlur={() => !search && setIsSearching(false)}
-                onKeyDown={(e) => {
-                  if (e.key !== "Escape") return;
-                  onSearchChange("");
-                  setIsSearching(false);
-                }}
-                placeholder="Search"
-                className="w-32 bg-transparent outline-none placeholder:text-black/40 dark:placeholder:text-white/40"
-              />
-            </ToolbarGroup>
-          ) : (
-            <ToolbarGroup className="px-0.5">
+        !isProject && (
+          <div className="hidden sm:contents">
+            <ToolbarGroup className="hidden md:flex">
               <ToolbarButton
-                symbol="magnifyingglass"
-                title="Search"
-                onClick={() => setIsSearching(true)}
+                symbol="square-grid-2x2"
+                title="Icons"
+                isActive={view === "grid"}
+                onClick={() => onViewChange("grid")}
+              />
+              <ToolbarButton
+                symbol="list-bullet"
+                title="List"
+                isActive={view === "list"}
+                onClick={() => onViewChange("list")}
               />
             </ToolbarGroup>
-          )}
-        </>
+            {isSearching ? (
+              <ToolbarGroup className="px-3 gap-1.5 ring-[3px] ring-[#0a84ff]/50">
+                <Symbol
+                  name="magnifyingglass"
+                  className="w-3.5 h-3.5 opacity-60"
+                />
+                <input
+                  autoFocus
+                  aria-label="Search"
+                  value={search}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  onBlur={() => !search && setIsSearching(false)}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Escape") return;
+                    onSearchChange("");
+                    setIsSearching(false);
+                  }}
+                  placeholder="Search"
+                  className="w-20 sm:w-32 bg-transparent outline-none placeholder:text-black/40 dark:placeholder:text-white/40"
+                />
+              </ToolbarGroup>
+            ) : (
+              <ToolbarGroup className="px-0.5">
+                <ToolbarButton
+                  symbol="magnifyingglass"
+                  title="Search"
+                  onClick={() => setIsSearching(true)}
+                />
+              </ToolbarGroup>
+            )}
+          </div>
+        )
       }
     />
   );

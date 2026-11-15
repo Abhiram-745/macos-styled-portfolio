@@ -11,13 +11,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: [
-          "var(--font-sf)",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "sans-serif",
-        ],
-        mono: ["var(--font-sf-mono)", "ui-monospace", "Menlo", "monospace"],
+        sans: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Consolas", "monospace"],
       },
       fontSize: fontSizes,
       zIndex: layers,

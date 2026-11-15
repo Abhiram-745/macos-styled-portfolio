@@ -4,7 +4,7 @@ import React, { RefObject, useEffect, useRef, useState } from "react";
 import { useWindows } from "../../../context/window-context";
 import { useContent } from "../../../context/content-context";
 import { useOpenTarget } from "../../../hooks/use-open-file";
-import { completions, runCommand } from "./commands";
+import { getCompletions, runCommand } from "./commands";
 import { Toolbar } from "../../window/toolbar";
 
 interface Entry {
@@ -122,7 +122,7 @@ const Terminal: React.FC = () => {
 
   const autocomplete = () => {
     if (!input) return;
-    const matches = completions.filter((c) => c.startsWith(input));
+    const matches = getCompletions(content).filter((c) => c.startsWith(input));
     if (matches.length === 1) {
       setInput(matches[0]);
     } else if (matches.length > 1) {
@@ -188,7 +188,7 @@ const Terminal: React.FC = () => {
       />
       <div
         ref={screenRef}
-        className="selectable flex-grow overflow-y-auto font-mono text-12 leading-relaxed p-2 cursor-text"
+        className="selectable flex-grow overflow-y-auto min-w-0 font-mono text-12 leading-relaxed p-2 cursor-text"
         onClick={() => {
           if (!window.getSelection()?.toString()) inputRef.current?.focus();
         }}
@@ -217,7 +217,7 @@ const Terminal: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="flex-grow bg-transparent outline-none caret-neutral-200"
+            className="min-w-0 w-0 flex-grow bg-transparent outline-none caret-neutral-200"
             spellCheck={false}
             autoCapitalize="off"
             autoComplete="off"

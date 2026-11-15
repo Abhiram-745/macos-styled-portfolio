@@ -26,7 +26,8 @@ export function useDockItems(): DockItem[][] {
     useWindows();
   const { isLauncherOpen, setLauncherOpen } = useOverlays();
   const { trashed, moveToTrash } = useFiles();
-  const { repository } = useContent().profile.links;
+  const { profile } = useContent();
+  const { repository } = profile.links;
 
   const appMenu = (id: AppId): DockItem["menu"] => {
     const isOpen = windows.some((w) => w.id === id);
@@ -60,7 +61,9 @@ export function useDockItems(): DockItem[][] {
     menu: appMenu(id),
   });
 
-  const [finder, ...pinned] = PINNED_APPS.map(appItem);
+  const [finder, ...pinned] = PINNED_APPS.filter(
+    (id) => id !== "mail" || !!profile.email
+  ).map(appItem);
   const settings = pinned.pop()!;
 
   const launcher: DockItem = {
@@ -74,14 +77,10 @@ export function useDockItems(): DockItem[][] {
     ? [
         {
           key: "source",
-          title: "Visual Studio Code",
+          title: "Source code",
           icon: VSCodeIcon,
           onClick: () =>
-            window.open(
-              repository.replace("github.com", "github.dev"),
-              "_blank",
-              "noopener,noreferrer"
-            ),
+            window.open(repository, "_blank", "noopener,noreferrer"),
         },
       ]
     : [];
@@ -94,7 +93,7 @@ export function useDockItems(): DockItem[][] {
     .filter((w) => w.isMinimized)
     .map<DockItem>((w) => ({
       key: `minimized-${w.id}`,
-      title: getApp(w.id).title,
+      title: `${getApp(w.id).title} (minimized)`,
       icon: getApp(w.id).icon,
       isMinimizedWindow: true,
       onClick: () => focusApp(w.id),

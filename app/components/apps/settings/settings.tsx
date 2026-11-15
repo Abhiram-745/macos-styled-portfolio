@@ -91,7 +91,21 @@ const Settings: React.FC<AppProps> = ({ payload, openedAt }) => {
         ]}
       />
       <section className="flex-grow flex flex-col min-w-0 bg-[#f2f2f7] dark:bg-[#282025]">
-        <Toolbar className="max-sm:pl-[92px]" title={current.label} />
+        <Toolbar className="max-sm:pl-[137px]" title={current.label} />
+        <div className="px-5 pb-3 sm:hidden">
+          <select
+            aria-label="Settings pane"
+            value={pane}
+            onChange={(event) => setPane(event.target.value as Pane)}
+            className="min-h-11 w-full rounded-lg border border-black/10 bg-white px-3 dark:border-white/10 dark:bg-[#3a333c]"
+          >
+            {panes.map(({ id, label }) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="flex-grow overflow-y-auto px-5 pb-6 space-y-4">
           {pane === "appearance" && <AppearancePane />}
           {pane === "wallpaper" && <WallpaperPane />}

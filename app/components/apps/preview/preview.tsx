@@ -8,11 +8,22 @@ const Preview: React.FC = () => {
   const { profile } = useContent();
 
   const download = () => {
+    if (!profile.cv) return;
     const link = document.createElement("a");
     link.href = profile.cv;
     link.download = `${profile.name} - CV.pdf`;
     link.click();
   };
+
+  if (!profile.cv)
+    return (
+      <div className="h-full flex flex-col bg-white dark:bg-[#282025]">
+        <Toolbar hasControls title="Preview" />
+        <p className="p-6 text-black/60 dark:text-white/60">
+          No document is available to preview.
+        </p>
+      </div>
+    );
 
   return (
     <div className="h-full flex flex-col bg-white dark:bg-[#282025]">
@@ -36,7 +47,9 @@ const Preview: React.FC = () => {
             <ToolbarButton
               symbol="arrow-up-forward-square"
               title="Open in New Tab"
-              onClick={() => window.open(profile.cv, "_blank")}
+              onClick={() =>
+                window.open(profile.cv, "_blank", "noopener,noreferrer")
+              }
             />
           </ToolbarGroup>
         }

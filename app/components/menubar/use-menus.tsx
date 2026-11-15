@@ -57,7 +57,7 @@ export function useMenus(): Menu[] {
       label: (
         <>
           <Symbol name="applelogo" className="w-[15px] h-[17px] mt-[-2px]" />
-          <span className="sr-only">Apple</span>
+          <span className="sr-only">Desktop menu</span>
         </>
       ),
       entries: [
@@ -99,7 +99,9 @@ export function useMenus(): Menu[] {
       entries: [
         { label: "New Finder Window", onClick: () => openApp("finder") },
         { label: "New Terminal Window", onClick: () => openApp("terminal") },
-        { label: "New Message", onClick: () => openApp("mail") },
+        ...(profile.email
+          ? [{ label: "New Message", onClick: () => openApp("mail") }]
+          : []),
         "separator",
         {
           label: "Close Window",
@@ -112,10 +114,14 @@ export function useMenus(): Menu[] {
       id: "edit",
       label: "Edit",
       entries: [
-        {
-          label: "Copy Email Address",
-          onClick: () => copy(profile.email, "Email address"),
-        },
+        ...(profile.email
+          ? [
+              {
+                label: "Copy Email Address",
+                onClick: () => copy(profile.email!, "Email address"),
+              },
+            ]
+          : []),
         {
           label: "Copy Portfolio Link",
           onClick: () => copy(window.location.href, "Portfolio link"),
@@ -149,11 +155,14 @@ export function useMenus(): Menu[] {
           label: "Applications",
           onClick: () => openApp("finder", "applications"),
         },
-        {
-          label: "Experience",
-          disabled: !experiences.length,
-          onClick: () => openApp("notes", experiences[0]?.id),
-        },
+        ...(experiences.length
+          ? [
+              {
+                label: "Experience",
+                onClick: () => openApp("notes", experiences[0]?.id),
+              },
+            ]
+          : []),
         "separator",
         ...[
           { label: "GitHub", url: links.github },
@@ -199,10 +208,14 @@ export function useMenus(): Menu[] {
       label: "Help",
       entries: [
         { label: "Terminal Commands", onClick: () => openApp("terminal") },
-        {
-          label: `Contact ${profile.name.split(" ")[0]}…`,
-          onClick: () => openApp("mail"),
-        },
+        ...(profile.email
+          ? [
+              {
+                label: `Contact ${profile.name.split(" ")[0]}…`,
+                onClick: () => openApp("mail"),
+              },
+            ]
+          : []),
         ...(links.repository
           ? [
               "separator" as const,

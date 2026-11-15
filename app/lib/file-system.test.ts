@@ -49,13 +49,40 @@ describe("file system", () => {
     ]);
   });
 
-  it("only opens projects that have a link", () => {
+  it("opens every project in its own Finder detail view, including projects without links", () => {
     const [rocket, secret] = entries.projects;
     expect(rocket.open).toEqual({
-      type: "url",
-      url: "https://example.com/rocket",
+      type: "app",
+      app: "finder",
+      payload: "project:rocket",
     });
-    expect(secret.open).toEqual({ type: "none" });
+    expect(secret.open).toEqual({
+      type: "app",
+      app: "finder",
+      payload: "project:secret",
+    });
+  });
+
+  it("omits the CV and contact apps when no CV or email is supplied", () => {
+    const without = buildFileEntries(
+      createContent({
+        profile: { ...content.profile, cv: undefined, email: undefined },
+      })
+    );
+    expect(without.cv).toBeNull();
+    for (const location of [
+      "desktop",
+      "documents",
+      "downloads",
+      "recents",
+      "trash",
+    ] as const) {
+      expect(
+        ids(listLocation(location, without, "jane", fileState(["cv"])))
+      ).not.toContain("cv");
+    }
+    expect(ids(without.applications)).not.toContain("preview");
+    expect(ids(without.applications)).not.toContain("mail");
   });
 
   it("protects applications and folders from rename and trash", () => {

@@ -12,12 +12,22 @@ const Mail: React.FC = () => {
   const canSend = subject.trim() && message.trim();
 
   const handleSend = () => {
-    if (!canSend) return;
+    if (!canSend || !profile.email) return;
     const params = new URLSearchParams({ subject, body: message });
     window.location.href = `mailto:${profile.email}?${params
       .toString()
       .replace(/\+/g, "%20")}`;
   };
+
+  if (!profile.email)
+    return (
+      <div className="h-full flex flex-col bg-white dark:bg-[#282025]">
+        <Toolbar hasControls title="Mail" />
+        <p className="p-6 text-black/60 dark:text-white/60">
+          No public email is listed.
+        </p>
+      </div>
+    );
 
   return (
     <div className="h-full flex flex-col bg-white dark:bg-[#282025]">

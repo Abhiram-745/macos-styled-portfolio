@@ -2,6 +2,10 @@ import { useCallback } from "react";
 import { useWindows } from "../context/window-context";
 import { Location, OpenTarget } from "../lib/file-system";
 import { canEmbed } from "../lib/browser";
+import {
+  projectIdFromPayload,
+  replaceProjectHash,
+} from "../lib/project-navigation";
 
 export function useOpenTarget(onOpenFolder?: (location: Location) => void) {
   const { openApp } = useWindows();
@@ -9,8 +13,12 @@ export function useOpenTarget(onOpenFolder?: (location: Location) => void) {
   return useCallback(
     (target: OpenTarget) => {
       switch (target.type) {
-        case "app":
+        case "app": {
+          const projectId =
+            target.app === "finder" && projectIdFromPayload(target.payload);
+          if (projectId) replaceProjectHash(projectId);
           return openApp(target.app, target.payload);
+        }
         case "url":
           return canEmbed(target.url)
             ? openApp("safari", target.url)

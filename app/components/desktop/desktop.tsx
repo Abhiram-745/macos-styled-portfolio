@@ -17,7 +17,11 @@ import { useSystem } from "../../context/system-context";
 import { useFiles } from "../../context/file-context";
 import { useContent } from "../../context/content-context";
 import { useOpenTarget } from "../../hooks/use-open-file";
-import { buildFileEntries, folderEntry } from "../../lib/file-system";
+import {
+  buildFileEntries,
+  folderEntry,
+  FileEntry,
+} from "../../lib/file-system";
 import { MENUBAR_HEIGHT } from "../../lib/constants";
 
 const ICON_SPACING = 108;
@@ -45,7 +49,11 @@ const Desktop: React.FC = () => {
 
   const entries = useMemo(() => {
     const { cv, about } = buildFileEntries(content);
-    return [folderEntry("projects", content.profile.username), cv, about];
+    return [
+      folderEntry("projects", content.profile.username),
+      cv,
+      about,
+    ].filter((entry): entry is FileEntry => entry !== null);
   }, [content]);
 
   const visibleEntries = entries

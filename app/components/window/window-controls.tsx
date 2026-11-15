@@ -18,8 +18,8 @@ const WindowControls: React.FC<WindowControlsProps> = memo(
     return (
       <div
         className={cn(
-          "window-controls absolute top-[19px] left-[19px] z-20 flex gap-[9px] transition-opacity duration-200",
-          isFullscreen && !isHovered && "opacity-0"
+          "window-controls absolute top-[5px] left-[5px] sm:top-[19px] sm:left-[19px] z-20 flex gap-0 sm:gap-[9px] transition-opacity duration-200",
+          isFullscreen && !isHovered && "sm:opacity-0"
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -75,13 +75,19 @@ const WindowControlButton: React.FC<WindowControlButtonProps> = memo(
       aria-label={label}
       disabled={disabled}
       className={cn(
-        "w-[14px] h-[14px] rounded-full flex items-center justify-center ring-[0.5px] ring-inset ring-black/20 enabled:active:brightness-75",
-        color ?? "bg-black/15 dark:bg-white/20"
+        "w-11 h-11 sm:w-[14px] sm:h-[14px] rounded-full flex items-center justify-center enabled:active:brightness-75"
       )}
       onClick={onClick}
       onDoubleClick={(e) => e.stopPropagation()}
     >
-      {isHovered && icon}
+      <span
+        className={cn(
+          "w-[14px] h-[14px] rounded-full flex items-center justify-center ring-[0.5px] ring-inset ring-black/20",
+          color ?? "bg-black/15 dark:bg-white/20"
+        )}
+      >
+        {isHovered && icon}
+      </span>
     </button>
   )
 );

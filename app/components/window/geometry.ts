@@ -38,7 +38,7 @@ export const getDesktopSize = (): Size => ({
 });
 
 const getDockSpace = () =>
-  window.innerWidth >= MOBILE_BREAKPOINT ? DOCK_RESERVED_HEIGHT : 0;
+  window.innerWidth >= MOBILE_BREAKPOINT ? DOCK_RESERVED_HEIGHT : 60;
 
 export const getZoomFrame = (): Frame => ({
   position: { x: 0, y: 0 },
@@ -58,6 +58,15 @@ export const getDefaultFrame = (
   desktop: Size,
   cascadeIndex: number
 ): Frame => {
+  if (desktop.width < MOBILE_BREAKPOINT) {
+    return {
+      size: {
+        width: desktop.width,
+        height: Math.max(200, desktop.height - 60),
+      },
+      position: { x: 0, y: 0 },
+    };
+  }
   const dockSpace = DOCK_RESERVED_HEIGHT;
   const width = Math.min(preferred.width, desktop.width - 40);
   const height = Math.min(preferred.height, desktop.height - dockSpace - 24);

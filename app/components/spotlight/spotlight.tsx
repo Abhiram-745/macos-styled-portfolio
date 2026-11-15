@@ -95,7 +95,8 @@ const Spotlight: React.FC = () => {
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Spotlight Search"
-                  className="flex-grow bg-transparent outline-none text-20 placeholder:text-neutral-400"
+                  aria-label="Spotlight Search"
+                  className="min-w-0 flex-grow bg-transparent outline-none text-20 placeholder:text-neutral-400"
                 />
               </div>
               {query.trim() && (

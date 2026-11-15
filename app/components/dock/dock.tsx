@@ -43,7 +43,14 @@ const MobileDock: React.FC<{ items: DockItemData[] }> = ({ items }) => {
     <nav aria-label="Dock" className="relative block md:hidden">
       <AnimatePresence>
         {isOpen && (
-          <motion.div className="absolute bottom-full mb-2 inset-x-0 flex flex-col items-center gap-2">
+          <motion.div
+            data-mobile-dock-panel
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.16 }}
+            className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 max-h-[calc(100dvh-110px)] overflow-y-auto rounded-2xl bg-[#242831]/95 p-3 shadow-2xl"
+          >
             {items.map((item, index) => (
               <motion.button
                 key={item.key}
@@ -53,16 +60,19 @@ const MobileDock: React.FC<{ items: DockItemData[] }> = ({ items }) => {
                 exit={{
                   opacity: 0,
                   y: 10,
-                  transition: { delay: index * 0.05 },
+                  transition: { duration: 0.12 },
                 }}
                 transition={{ delay: (items.length - 1 - index) * 0.05 }}
                 onClick={() => {
                   item.onClick();
                   setIsOpen(false);
                 }}
-                className="relative h-12 w-12"
+                className="relative flex h-12 w-44 shrink-0 items-center gap-3 text-left text-white"
               >
-                <AppIcon icon={item.icon} />
+                <span className="relative h-11 w-11 shrink-0">
+                  <AppIcon icon={item.icon} />
+                </span>
+                <span className="text-13">{item.title}</span>
               </motion.button>
             ))}
           </motion.div>

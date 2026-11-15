@@ -9,12 +9,16 @@ import Notifications from "./components/system/notifications";
 import BrightnessOverlay from "./components/system/brightness-overlay";
 import PowerScreen from "./components/system/power-screen";
 import Launcher from "./components/launcher/launcher";
+import DesktopIntro from "./components/desktop/desktop-intro";
+import ProjectNavigation from "./components/apps/finder/project-navigation";
 
 export default function Home() {
   return (
     <Providers>
-      <main className="relative h-screen w-screen overflow-hidden">
+      <main className="relative h-[100dvh] w-screen overflow-hidden">
+        <ProjectNavigation />
         <Wallpaper />
+        <DesktopIntro />
         <Desktop />
         <WindowManager />
         <div className="absolute bottom-2 z-dock w-full flex justify-center pointer-events-none [&>*]:pointer-events-auto">

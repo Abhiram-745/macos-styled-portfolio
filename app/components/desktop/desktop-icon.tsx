@@ -46,9 +46,11 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({
   const [position, setPosition] = useState(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const dragged = useRef(false);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
+    dragged.current = false;
     onSelect();
 
     const bounds = ref.current?.parentElement?.getBoundingClientRect();
@@ -63,6 +65,7 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({
       if (!hasMoved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
 
       hasMoved = true;
+      dragged.current = true;
       setIsDragging(true);
       setPosition(
         clampToBounds(
@@ -75,12 +78,15 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({
     const handlePointerUp = (up: PointerEvent) => {
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
       setIsDragging(false);
       if (hasMoved) onDrop?.(up.clientX, up.clientY);
+      else if (up.type === "pointerup" && up.pointerType === "touch") onOpen();
     };
 
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
   };
 
   return (
@@ -88,15 +94,26 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({
       ref={ref}
       data-icon-id={id}
       role="option"
+      tabIndex={0}
       aria-label={label}
       aria-selected={isSelected}
       className="absolute flex flex-col items-center w-24 py-1 touch-none"
       style={{ right: position.right, top: position.top }}
       onPointerDown={handlePointerDown}
-      onClick={() => {
-        if (window.matchMedia("(pointer: coarse)").matches) onOpen();
+      onDoubleClick={() =>
+        !dragged.current &&
+        !window.matchMedia("(pointer: coarse)").matches &&
+        onOpen()
+      }
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || (e.metaKey && e.key === "ArrowDown")) {
+          e.preventDefault();
+          onOpen();
+        } else if (e.key === " ") {
+          e.preventDefault();
+          onSelect();
+        }
       }}
-      onDoubleClick={onOpen}
     >
       <div
         className={cn(

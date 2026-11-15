@@ -1,104 +1,80 @@
-# macOS Portfolio
+# Abhiram's desktop
 
-A portfolio that looks and feels like macOS — Finder, Notes, Terminal, Mail, Preview, System Settings, Spotlight, Quick Look, a working dock, menu bar and Trash.
+Abhiram Kakarla's personal portfolio, adapted from **Roshish Shrestha's [macOS styled portfolio](https://github.com/R0shish/macos-styled-portfolio)** ([project write-up](https://rosh.sh/work/macos-portfolio)). This repository is Abhiram's actual fork: [Abhiram-745/macos-styled-portfolio](https://github.com/Abhiram-745/macos-styled-portfolio).
 
-Everything personal lives in one file, so you can clone it and make it yours in a few minutes.
+The desktop keeps Finder, windows, a dock, Notes, Terminal, Spotlight, System Settings and keyboard shortcuts. Projects open into their own readable portfolio detail views. On touch screens, tap desktop icons and project folders to open them; on desktop, double-click or use the keyboard.
 
-## Make it yours
-
-1. Clone the repo and install dependencies
-
-   ```bash
-   npm install
-   npm run dev
-   ```
-
-2. Edit [`data/portfolio.json`](data/portfolio.json) — your name, links, experience, projects, awards, skills, wallpapers and the welcome notification.
-3. Replace `public/CV.pdf` with your CV (or point `profile.cv` somewhere else).
-4. Drop your own wallpapers in `public/wallpapers/` and list them under `system.wallpapers`.
-
-That's it. Every app reads from that file — nothing personal is hardcoded in the components.
-
-### Content reference
-
-The shape of the file is defined by `PortfolioContent` in [`app/lib/content/types.ts`](app/lib/content/types.ts).
-
-| Field                     | Used by                                                                     |
-| ------------------------- | --------------------------------------------------------------------------- |
-| `site`                    | Browser tab title and description                                           |
-| `profile`                 | Contacts card, Notes, Terminal, menu bar, Mail, lock screen                 |
-| `profile.links`           | Any link left out is hidden everywhere (`repository` → VS Code in the dock) |
-| `experiences`             | Notes, Terminal `experience`, Spotlight                                     |
-| `projects`                | Finder (tags become sidebar tags), Spotlight, Terminal                      |
-| `awards`, `skills`        | Notes, Terminal                                                             |
-| `system.wallpapers`       | System Settings → Wallpaper (`src` image or CSS `gradient`)                 |
-| `system.default*`         | First-visit appearance and wallpaper                                        |
-| `system.hostname`         | Terminal prompt                                                             |
-| `system.browser.homepage` | Safari's start page (falls back to `profile.links.website`)                 |
-
-Dates use `YYYY-MM` (leave `end` out for a current role).
-
-## Using your own backend
-
-The app never imports the JSON directly. It calls an API through a `ContentSource` ([`app/lib/content/source.ts`](app/lib/content/source.ts)):
-
-```ts
-export interface ContentSource {
-  load(): Promise<PortfolioContent>;
-}
-```
-
-By default it fetches `GET /api/portfolio`, a route that serves `data/portfolio.json` and is exported as a static file at build time, so it works on GitHub Pages too.
-
-To use a real backend, return the same `PortfolioContent` shape from any endpoint and set:
+## Run locally
 
 ```bash
-NEXT_PUBLIC_CONTENT_API_URL=https://your-api.example.com/portfolio
+npm ci
+npm run dev
 ```
 
-(Allow CORS from your site's origin.) For anything more custom — auth headers, a CMS SDK, GraphQL — implement `ContentSource` yourself and export it as `contentSource`.
-
-## Development
+Open the local address printed by Next.js. No account or paid service is required.
 
 ```bash
-npm run dev          # start the dev server
-npm run check        # lint, typecheck, formatting and tests — what CI runs
-npm test             # unit tests (Vitest)
-npm run format       # format with Prettier
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run format:check
 ```
 
-### Architecture
+For repeatable real-browser checks of the exported app at 1280px, 390px and 320px:
 
-```
-app/
-├── api/portfolio/     Static API route serving data/portfolio.json
-├── components/
-│   ├── apps/          One folder per app (Finder, Notes, Terminal, …), lazy-loaded
-│   ├── desktop/       Desktop icons and marquee selection
-│   ├── dock/          Dock layout, items, magnification
-│   ├── menubar/       Menu bar, menus, Control Center
-│   ├── window/        Window chrome, frame geometry, resize, error boundary
-│   └── …              Spotlight, Quick Look, launcher, system screens
-├── context/           React state: content, settings, windows, files, overlays, notifications
-├── hooks/             Reusable hooks
-└── lib/
-    ├── content/       Zod schema (the content contract) and content sources
-    ├── file-system.ts Virtual file system shared by Desktop, Finder and Quick Look
-    ├── apps.tsx       App registry
-    └── design-tokens.ts  Type scale and layer order used by Tailwind
+```bash
+npx playwright install chromium
+npm run build
+npm run test:e2e
 ```
 
-- **Content** is validated with Zod at the API boundary, so a bad backend response shows a readable error instead of breaking the UI.
-- **Window management** is a pure reducer (`context/window-state.ts`) with selectors, so every interaction is unit tested.
-- **Logic lives outside components** — geometry, search, navigation and the file system are plain functions with tests next to them.
-- **Each app runs in an error boundary**, so one crashing app shows a "quit unexpectedly" sheet instead of taking down the desktop.
+To use an existing Chromium installation, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable path. Set `PORTFOLIO_SCREENSHOT_DIR` to save the browser captures. The suite checks project reloads, touch opening, keyboard search, window controls, Notes, Terminal, Settings and horizontal overflow. It runs a local static server only; it does not publish anything.
 
-## Deploying
+`npm run build` exports the static application to `out/`. The content API is also exported, so the portfolio does not need a separate backend.
 
-`npm run build` produces a static site in `out/`. CI runs `npm run check` on every pull request, and the deploy workflow runs the same checks before publishing to GitHub Pages on every push to `main`.
+The tested dependency checkpoint uses Next.js and `eslint-config-next` 15.5.29 (the supported Maintenance LTS line), Zod 4.6.7, and a scoped override of Next's PostCSS to 8.5.33. Next 14 is unsupported; its 14.2.35 backport still matches current advisories. `npm audit --omit=dev` reported zero production vulnerabilities on 15 November 2026. Recheck advisories before a future public deployment.
 
-## Built with
+## Content
 
-Next.js, Tailwind CSS, Framer Motion and react-draggable.
+Edit [`data/portfolio.json`](data/portfolio.json). Its validated contract is in [`app/lib/content/schema.ts`](app/lib/content/schema.ts).
 
-App icons, SF Symbols and the SF Pro font are Apple's. They're licensed for use on Apple platforms, so swap them out if you need to be strict about it.
+- `site` controls the page title and description.
+- `profile` supplies Abhiram's identity and bio. Email, CV and career start are optional; absent data hides the corresponding personal surfaces.
+- `projects` supplies the Finder folders and their detail views: category, role, summary, grounded tags, links, longer paragraphs and status. Keep claims accurate and date user counts rather than implying live analytics.
+- `experiences` and `awards` may remain empty. Project and co-founder roles are described in the projects themselves.
+- `system` controls appearance, the wallpaper and welcome message.
+
+The public project links are provided as content. Pythe's virtual-computer features are in development for launch. Its before0 section links the public residency announcement; it does not claim the residency happened or that attendees used the product. Blertly's 500 users and Vistara AI's 100 users were reported in November 2026.
+
+There is no personal email or CV supplied for this adaptation. Do not reintroduce the original author's personal information or a fallback CV.
+
+## Architecture
+
+`ContentSource` loads validated content from `/api/portfolio` by default. A different content API can be configured through `NEXT_PUBLIC_CONTENT_API_URL`, provided it returns the same schema and allows the site's origin.
+
+```text
+app/components/apps/      Finder, project details, Notes, Terminal and other apps
+app/components/window/    Window controls, dragging and resizing
+app/context/              Desktop, files, content and window state
+app/lib/content/          Content contract and loading
+app/lib/file-system.ts    Shared virtual file entries
+```
+
+The app registry is lazy-loaded. Windows retain close, minimise and maximise controls. Finder's virtual file system also feeds desktop icons, Quick Look and Spotlight. Project hash links work in a static export and survive reloads.
+
+## Deployment is manual
+
+Automatic GitHub Pages deployment on push has been removed from `.github/workflows/publish.yml`. That workflow can run only through **Run workflow**, and this task does not run it. CI checks pull requests without publishing them.
+
+[`vercel.json`](vercel.json) sets `git.deploymentEnabled` to `false` so this branch does not request automatic Vercel Git deployments. No Vercel project, domain, integration, account setting or existing deployment was changed by this implementation.
+
+For a future preview, create a **separate new Vercel project** using this fork and the intended branch. Do not import into or reconnect an existing portfolio project. Review the project's free-plan limits and settings yourself; no paid service is needed. Keep Git deployment disabled unless you intentionally choose to enable it. An explicit deployment in the new project is separate from pushing this repository.
+
+## Credits and asset provenance
+
+The desktop implementation originated with **Roshish Shrestha**. Keep the visible template credit and this attribution when customising it. The upstream README invites cloning and customisation, but the source has **no standalone root LICENSE**. This fork is not labelled MIT and does not assert a new licence for the upstream code.
+
+The bundled Apple app icons, SF Symbol images, Apple logo and SF font files have been removed or replaced. The interface now uses system font stacks: it only uses a platform's installed system fonts, with ordinary sans-serif and monospace fallbacks. The replacement app/file artwork and inline interface glyphs are original, simple geometric drawings made for this adaptation. Editable SVG sources are in [`app/assets/originals`](app/assets/originals); PNG exports preserve the original component import paths. The startup mark and favicon use Abhiram's AK initials.
+
+This remains a macOS-inspired portfolio, not an Apple product or an official Apple interface.

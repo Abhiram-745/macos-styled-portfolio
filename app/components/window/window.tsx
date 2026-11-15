@@ -42,7 +42,7 @@ const Window: React.FC<WindowProps> = ({
   const windowRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const { frame, moveTo, isTransitioning, isResizing, startResize } =
+  const { frame, moveTo, isTransitioning, isResizing, isCompact, startResize } =
     useWindowFrame({
       preferredSize: app.size,
       minSize: app.minSize ?? DEFAULT_MIN_SIZE,
@@ -63,7 +63,7 @@ const Window: React.FC<WindowProps> = ({
     <Draggable
       axis="both"
       handle=".handle"
-      disabled={state.isFullscreen}
+      disabled={state.isFullscreen || isCompact}
       cancel="button, input, textarea, a, .window-controls"
       nodeRef={windowRef}
       position={frame.position}
@@ -99,13 +99,14 @@ const Window: React.FC<WindowProps> = ({
           height: frame.size.height,
           zIndex: state.zIndex,
         }}
-        onMouseDownCapture={() => focusApp(app.id)}
+        onPointerDownCapture={() => focusApp(app.id)}
         onContextMenu={(e) => {
           if (!isInside(e.target, "input, textarea, .selectable"))
             e.preventDefault();
         }}
       >
         <motion.div
+          data-window-body
           className={cn(
             "h-full w-full bg-[#e8e6ea]/75 dark:bg-[#3a3039]/70 backdrop-blur-3xl backdrop-saturate-150 rounded-[26px] overflow-hidden flex flex-col relative text-13 text-black/85 dark:text-white/90 ring-[0.5px] ring-black/40 transition-shadow duration-200",
             "after:absolute after:inset-0 after:rounded-[inherit] after:pointer-events-none after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.5)] dark:after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.13)]",
@@ -164,7 +165,7 @@ const Window: React.FC<WindowProps> = ({
             {blocksPointer && <div className="absolute inset-0" />}
           </div>
         </motion.div>
-        {!state.isMaximized && !state.isFullscreen && (
+        {!isCompact && !state.isMaximized && !state.isFullscreen && (
           <ResizeHandles onResizeStart={startResize} />
         )}
       </div>

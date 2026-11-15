@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import font from "next/font/local";
 import "./globals.css";
 import content from "../data/portfolio.json";
 
@@ -8,18 +7,6 @@ export const metadata: Metadata = {
   description: content.site.description,
 };
 
-const sf = font({
-  src: "../public/fonts/SF-Pro.woff2",
-  weight: "1 1000",
-  variable: "--font-sf",
-});
-
-const sfMono = font({
-  src: "../public/fonts/SF-Mono.woff2",
-  weight: "300 900",
-  variable: "--font-sf-mono",
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,9 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${sf.variable} ${sfMono.variable} font-sans`}>
-        {children}
-      </body>
+      <body className="font-sans">{children}</body>
     </html>
   );
 }

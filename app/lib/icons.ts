@@ -1,3 +1,4 @@
+// Original geometric app artwork; see app/assets/originals.
 import { StaticImageData } from "next/image";
 
 import Finder from "../assets/icons/apps/finder.png";

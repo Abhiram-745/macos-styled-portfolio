@@ -11,7 +11,7 @@ import Image from "next/image";
 import { PortfolioContent } from "../lib/content/schema";
 import { ContentSource, contentSource } from "../lib/content/source";
 
-import AppleLogo from "../assets/icons/apple.png";
+import Monogram from "../assets/icons/monogram.png";
 
 const ContentContext = createContext<PortfolioContent | null>(null);
 
@@ -48,7 +48,7 @@ export const ContentProvider: React.FC<ContentProviderProps> = ({
     return (
       <div className="h-screen w-screen bg-black flex flex-col items-center justify-center gap-6 text-white/70 text-13">
         <Image
-          src={AppleLogo}
+          src={Monogram}
           alt=""
           width={70}
           height={86}
