@@ -86,21 +86,23 @@ export const folderEntry = (id: FolderId, username: string): FileEntry => ({
 });
 
 export const buildFileEntries = ({ profile, projects }: PortfolioContent) => {
-  const cv: FileEntry = {
-    id: "cv",
-    name: "CV.pdf",
-    kind: "PDF Document",
-    icon: PdfIcon,
-    canTrash: true,
-    canRename: true,
-    preview: profile.cv,
-    open: { type: "app", app: "preview" },
-    info: {
-      subtitle: "PDF Document",
-      description: `Curriculum vitae of ${profile.name}.`,
-      tags: [],
-    },
-  };
+  const cv: FileEntry | null = profile.cv
+    ? {
+        id: "cv",
+        name: "CV.pdf",
+        kind: "PDF Document",
+        icon: PdfIcon,
+        canTrash: true,
+        canRename: true,
+        preview: profile.cv,
+        open: { type: "app", app: "preview" },
+        info: {
+          subtitle: "PDF Document",
+          description: `Curriculum vitae of ${profile.name}.`,
+          tags: [],
+        },
+      }
+    : null;
 
   const about: FileEntry = {
     id: "about",
@@ -120,24 +122,30 @@ export const buildFileEntries = ({ profile, projects }: PortfolioContent) => {
     icon: FolderIcon,
     canTrash: true,
     canRename: true,
-    open: project.link ? { type: "url", url: project.link } : { type: "none" },
+    open: { type: "app", app: "finder", payload: `project:${project.id}` },
     info: {
-      subtitle: project.company,
+      subtitle: project.category || project.company,
       description: project.description,
       tags: project.tags,
       link: project.link,
     },
   }));
 
-  const applications = apps.map<FileEntry>((app) => ({
-    id: app.id,
-    name: app.name,
-    kind: "Application",
-    icon: app.icon,
-    canTrash: false,
-    canRename: false,
-    open: { type: "app", app: app.id },
-  }));
+  const applications = apps
+    .filter(
+      (app) =>
+        (app.id !== "mail" || profile.email) &&
+        (app.id !== "preview" || profile.cv)
+    )
+    .map<FileEntry>((app) => ({
+      id: app.id,
+      name: app.name,
+      kind: "Application",
+      icon: app.icon,
+      canTrash: false,
+      canRename: false,
+      open: { type: "app", app: app.id },
+    }));
 
   return { cv, about, projects: projectEntries, applications };
 };
@@ -155,7 +163,10 @@ export const listLocation = (
   username: string,
   { trashed, isVisible }: FileState
 ): FileEntry[] => {
-  const visible = (list: FileEntry[]) => list.filter((e) => isVisible(e.id));
+  const present = (list: (FileEntry | null)[]): FileEntry[] =>
+    list.filter((entry): entry is FileEntry => entry !== null);
+  const visible = (list: (FileEntry | null)[]) =>
+    present(list).filter((e) => isVisible(e.id));
   const tag = getTagFromLocation(location);
   if (tag)
     return visible(entries.projects.filter((e) => e.info?.tags.includes(tag)));
@@ -187,8 +198,8 @@ export const listLocation = (
     case "projects":
       return visible(entries.projects);
     case "trash":
-      return [entries.cv, entries.about, ...entries.projects].filter((e) =>
-        trashed.includes(e.id)
+      return present([entries.cv, entries.about, ...entries.projects]).filter(
+        (e) => trashed.includes(e.id)
       );
   }
 };

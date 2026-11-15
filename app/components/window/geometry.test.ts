@@ -73,4 +73,16 @@ describe("getDefaultFrame", () => {
     expect(size.width).toBeLessThanOrEqual(small.width);
     expect(size.height).toBeLessThanOrEqual(small.height);
   });
+
+  it.each([320, 390])(
+    "uses the full %ipx touch viewport and reserves the dock",
+    (width) => {
+      expect(
+        getDefaultFrame({ width: 920, height: 560 }, { width, height: 700 }, 3)
+      ).toEqual({
+        size: { width, height: 640 },
+        position: { x: 0, y: 0 },
+      });
+    }
+  );
 });

@@ -12,6 +12,8 @@ import { AppProps } from "../../../lib/apps";
 import Symbol from "../../symbol";
 import { Toolbar } from "../../window/toolbar";
 import { useWindowFocus } from "../../window/window-focus";
+import { useOpenTarget } from "../../../hooks/use-open-file";
+import { projectHash, projectPayload } from "../../../lib/project-navigation";
 
 interface Note {
   id: string;
@@ -28,11 +30,30 @@ const ExternalLink: React.FC<{ href: string; children: React.ReactNode }> = ({
   <a
     href={href}
     target="_blank"
+    rel="noopener noreferrer"
     className="text-[#b8860b] dark:text-[#ffd52e] underline underline-offset-2"
   >
     {children}
   </a>
 );
+
+const ProjectLink: React.FC<{ id: string }> = ({ id }) => {
+  const openTarget = useOpenTarget();
+  return (
+    <a
+      className="text-[#b8860b] dark:text-[#ffd52e] underline underline-offset-2"
+      href={projectHash(id)}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey)
+          return;
+        event.preventDefault();
+        openTarget({ type: "app", app: "finder", payload: projectPayload(id) });
+      }}
+    >
+      Open project in Finder →
+    </a>
+  );
+};
 
 const escapeRegExp = (text: string) =>
   text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -107,9 +128,10 @@ const ChecklistItem: React.FC<{ id: string; children: React.ReactNode }> = ({
   );
 };
 
-const buildNotes = ({
+export const buildNotes = ({
   profile,
   experiences,
+  projects,
   skills,
   awards,
 }: PortfolioContent): Note[] => [
@@ -126,32 +148,61 @@ const buildNotes = ({
         {profile.intro.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
-        <p>
-          Say hi at{" "}
-          <ExternalLink href={`mailto:${profile.email}`}>
-            {profile.email}
-          </ExternalLink>
-          {profile.links.github && (
-            <>
-              {" "}
-              or find me on{" "}
+        {(profile.email || profile.links.github || profile.links.linkedin) && (
+          <p>
+            Find me on{" "}
+            {profile.links.github && (
               <ExternalLink href={profile.links.github}>GitHub</ExternalLink>
-            </>
-          )}
-          {profile.links.linkedin && (
-            <>
-              {" "}
-              and{" "}
-              <ExternalLink href={profile.links.linkedin}>
-                LinkedIn
-              </ExternalLink>
-            </>
-          )}
+            )}
+            {profile.email && (
+              <>
+                {" "}
+                ·{" "}
+                <ExternalLink href={`mailto:${profile.email}`}>
+                  {profile.email}
+                </ExternalLink>
+              </>
+            )}
+            {profile.links.linkedin && (
+              <>
+                {" "}
+                ·{" "}
+                <ExternalLink href={profile.links.linkedin}>
+                  LinkedIn
+                </ExternalLink>
+              </>
+            )}
+            .
+          </p>
+        )}
+        <p className="text-12 text-black/50 dark:text-white/50">
+          Desktop template by{" "}
+          <ExternalLink href="https://rosh.sh/work/macos-portfolio">
+            Roshish Shrestha
+          </ExternalLink>
           .
         </p>
       </>
     ),
   },
+  ...projects.map((project) => ({
+    id: `project-${project.id}`,
+    title: project.name,
+    date: project.start
+      ? formatMonth(parseYearMonth(project.start))
+      : "Side project",
+    preview: project.category || project.company,
+    content: (
+      <>
+        <p className="text-neutral-500 dark:text-neutral-400">{project.role}</p>
+        <p>{project.description}</p>
+        <p>{project.result}</p>
+        <p>
+          <ProjectLink id={project.id} />
+        </p>
+      </>
+    ),
+  })),
   ...experiences.map((experience) => ({
     id: experience.id,
     title: experience.company,
@@ -189,62 +240,74 @@ const buildNotes = ({
       </>
     ),
   })),
-  {
-    id: "skills",
-    title: "Skills",
-    date: "Always learning",
-    preview: Object.values(skills).flat().slice(0, 4).join(", "),
-    content: (
-      <>
-        {Object.entries(skills).map(([group, items]) => (
-          <div key={group}>
-            <h3 className="font-semibold">{group}</h3>
-            <ul className="mt-1 space-y-0.5">
-              {items.map((item) => (
-                <ChecklistItem key={item} id={`${group}/${item}`}>
-                  {item}
-                </ChecklistItem>
+  ...(Object.keys(skills).length
+    ? [
+        {
+          id: "skills",
+          title: "Skills",
+          date: "Always learning",
+          preview: Object.values(skills).flat().slice(0, 4).join(", "),
+          content: (
+            <>
+              {Object.entries(skills).map(([group, items]) => (
+                <div key={group}>
+                  <h3 className="font-semibold">{group}</h3>
+                  <ul className="mt-1 space-y-0.5">
+                    {items.map((item) => (
+                      <ChecklistItem key={item} id={`${group}/${item}`}>
+                        {item}
+                      </ChecklistItem>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
-          </div>
-        ))}
-      </>
-    ),
-  },
-  {
-    id: "awards",
-    title: "Honors & Awards",
-    date: awards[0].date,
-    preview: awards.map((award) => award.title).join(", "),
-    content: (
-      <>
-        {awards.map((award) => (
-          <div key={award.title}>
-            <h3 className="font-semibold">{award.title}</h3>
-            <p className="text-neutral-500 dark:text-neutral-400">
-              {award.event} · {award.date}
-            </p>
-            <p className="mt-1">
-              {award.description}{" "}
-              {award.link && (
-                <ExternalLink href={award.link}>Read more</ExternalLink>
-              )}
-            </p>
-          </div>
-        ))}
-      </>
-    ),
-  },
+            </>
+          ),
+        },
+      ]
+    : []),
+  ...(awards.length
+    ? [
+        {
+          id: "awards",
+          title: "Honors & Awards",
+          date: awards[0]?.date ?? "",
+          preview: awards.map((award) => award.title).join(", "),
+          content: (
+            <>
+              {awards.map((award) => (
+                <div key={award.title}>
+                  <h3 className="font-semibold">{award.title}</h3>
+                  <p className="text-neutral-500 dark:text-neutral-400">
+                    {award.event} · {award.date}
+                  </p>
+                  <p className="mt-1">
+                    {award.description}{" "}
+                    {award.link && (
+                      <ExternalLink href={award.link}>Read more</ExternalLink>
+                    )}
+                  </p>
+                </div>
+              ))}
+            </>
+          ),
+        },
+      ]
+    : []),
 ];
 
 const Notes: React.FC<AppProps> = ({ payload, openedAt }) => {
   const notes = buildNotes(useContent());
   const [selectedId, setSelectedId] = useState(payload ?? notes[0].id);
   const [search, setSearch] = useState("");
+  const [showNote, setShowNote] = useState(!!payload);
   const isFocused = useWindowFocus();
 
   useEffect(() => {
-    if (payload) setSelectedId(payload);
+    if (payload) {
+      setSelectedId(payload);
+      setShowNote(true);
+    }
   }, [payload, openedAt]);
 
   const filteredNotes = notes.filter((note) =>
@@ -253,8 +316,13 @@ const Notes: React.FC<AppProps> = ({ payload, openedAt }) => {
   const selectedNote = notes.find((note) => note.id === selectedId) ?? notes[0];
 
   return (
-    <div className="flex h-full">
-      <aside className="w-40 sm:w-64 shrink-0 flex flex-col select-none">
+    <div className="flex h-full min-w-0">
+      <aside
+        className={cn(
+          "w-full sm:w-64 shrink-0 flex-col select-none",
+          showNote ? "hidden sm:flex" : "flex"
+        )}
+      >
         <div className="handle h-[52px] shrink-0" />
         <div className="px-3 pb-2">
           <div className="flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-black/5 dark:bg-white/[0.08]">
@@ -271,7 +339,10 @@ const Notes: React.FC<AppProps> = ({ payload, openedAt }) => {
           {filteredNotes.map((note) => (
             <button
               key={note.id}
-              onClick={() => setSelectedId(note.id)}
+              onClick={() => {
+                setSelectedId(note.id);
+                setShowNote(true);
+              }}
               data-selected={selectedNote.id === note.id}
               className={cn(
                 "group w-full text-left px-3 py-2 rounded-[10px] cursor-default",
@@ -299,8 +370,19 @@ const Notes: React.FC<AppProps> = ({ payload, openedAt }) => {
           )}
         </div>
       </aside>
-      <article className="flex-grow flex flex-col min-w-0 bg-white dark:bg-[#1e1e1e]">
+      <article
+        className={cn(
+          "flex-grow flex-col min-w-0 bg-white dark:bg-[#1e1e1e]",
+          showNote ? "flex" : "hidden sm:flex"
+        )}
+      >
         <Toolbar />
+        <button
+          onClick={() => setShowNote(false)}
+          className="sm:hidden min-h-11 px-6 text-left text-[#b8860b] dark:text-[#ffd52e]"
+        >
+          ← All notes
+        </button>
         <div className="selectable flex-grow overflow-y-auto px-6 sm:px-12 pb-8 selection:bg-[#ffd52e]/45">
           <div className="text-center text-12 text-black/40 dark:text-white/40 mb-4">
             {selectedNote.date}

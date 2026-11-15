@@ -12,7 +12,7 @@ export const SettingsRow: React.FC<{
   label: string;
   children: React.ReactNode;
 }> = ({ label, children }) => (
-  <div className="flex items-center justify-between gap-4 min-h-[44px] py-2">
+  <div className="flex max-sm:flex-col max-sm:items-start items-center justify-between gap-4 min-h-[44px] py-2">
     <div>{label}</div>
     {children}
   </div>

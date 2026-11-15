@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useIsPresent } from "framer-motion";
 import { useLatest } from "../../hooks/use-latest";
 
-import AppleLogo from "../../assets/icons/apple.png";
+import Monogram from "../../assets/icons/monogram.png";
 
 const TICK_MS = 90;
 const SETTLE_MS = 400;
@@ -31,7 +31,7 @@ const BootScreen: React.FC<{ onDone: () => void }> = ({ onDone }) => {
   return (
     <div className="h-full flex flex-col items-center justify-center gap-14 bg-black">
       <Image
-        src={AppleLogo}
+        src={Monogram}
         alt=""
         width={70}
         height={86}

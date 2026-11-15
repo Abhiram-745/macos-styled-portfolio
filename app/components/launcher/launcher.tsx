@@ -7,10 +7,12 @@ import AppIcon from "../dock/app-icon";
 import Symbol from "../symbol";
 import { apps } from "../../lib/apps";
 import { useWindows } from "../../context/window-context";
+import { useContent } from "../../context/content-context";
 
 const Launcher: React.FC = () => {
   const { isLauncherOpen, setLauncherOpen } = useOverlays();
   const { openApp } = useWindows();
+  const { profile } = useContent();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -23,8 +25,11 @@ const Launcher: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isLauncherOpen, setLauncherOpen]);
 
-  const filteredApps = apps.filter((app) =>
-    app.name.toLowerCase().includes(search.toLowerCase())
+  const filteredApps = apps.filter(
+    (app) =>
+      (app.id !== "mail" || !!profile.email) &&
+      (app.id !== "preview" || !!profile.cv) &&
+      app.name.toLowerCase().includes(search.toLowerCase())
   );
 
   const launch = (id: (typeof apps)[number]["id"]) => {
@@ -60,7 +65,7 @@ const Launcher: React.FC = () => {
             />
           </div>
           <motion.div
-            className="grid grid-cols-[repeat(auto-fill,120px)] justify-center gap-x-8 gap-y-6 w-full max-w-5xl px-8 mt-[8vh]"
+            className="grid grid-cols-[repeat(auto-fill,100px)] sm:grid-cols-[repeat(auto-fill,120px)] justify-center gap-x-5 gap-y-6 w-full max-w-5xl px-5 mt-[8vh] overflow-y-auto pb-20"
             initial={{ scale: 1.08 }}
             animate={{ scale: 1 }}
             exit={{ scale: 1.08 }}

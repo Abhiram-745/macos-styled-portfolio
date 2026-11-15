@@ -19,9 +19,9 @@ export const portfolioSchema = z.object({
     summary: z.string(),
     intro: z.array(z.string()).default([]),
     focus: z.array(z.string()).default([]),
-    careerStart: yearMonth,
-    email: z.string().email(),
-    cv: z.string(),
+    careerStart: yearMonth.optional(),
+    email: z.string().email().optional(),
+    cv: z.string().optional(),
     links: z
       .object({
         website: url.optional(),
@@ -54,6 +54,19 @@ export const portfolioSchema = z.object({
         description: z.string(),
         tags: z.array(z.string()).default([]),
         link: url.optional(),
+        category: z.string().default(""),
+        role: z.string().default(""),
+        paragraphs: z.array(z.string()).default([]),
+        links: z.array(z.object({ label: z.string(), href: url })).default([]),
+        result: z.string().default(""),
+        start: yearMonth.optional(),
+        announcement: z
+          .object({
+            title: z.string(),
+            description: z.string(),
+            href: url,
+          })
+          .optional(),
       })
     )
     .default([]),
@@ -68,7 +81,7 @@ export const portfolioSchema = z.object({
       })
     )
     .default([]),
-  skills: z.record(z.array(z.string())).default({}),
+  skills: z.record(z.string(), z.array(z.string())).default({}),
   system: z.object({
     hostname: z.string().default("portfolio"),
     defaultAppearance: z.enum(["light", "dark", "auto"]).default("auto"),

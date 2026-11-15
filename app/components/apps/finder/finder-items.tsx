@@ -31,6 +31,7 @@ const FinderItems = forwardRef<HTMLDivElement, FinderItemsProps>(
   ({ entries, view, iconSize, selectedId, renamingId, ...handlers }, ref) => {
     const isFocused = useWindowFocus();
     const renameTimer = useRef<ReturnType<typeof setTimeout>>();
+    const touchOrigin = useRef<{ x: number; y: number } | null>(null);
     const cancelPendingRename = () => clearTimeout(renameTimer.current);
 
     useEffect(() => cancelPendingRename, [selectedId]);
@@ -45,6 +46,26 @@ const FinderItems = forwardRef<HTMLDivElement, FinderItemsProps>(
       draggable: handlers.isDraggable(entry),
       onDragStart: (e: React.DragEvent<HTMLElement>) =>
         handlers.onDragStart(e, entry),
+      onPointerDown: (e: React.PointerEvent) => {
+        touchOrigin.current =
+          e.pointerType === "touch" ? { x: e.clientX, y: e.clientY } : null;
+      },
+      onPointerUp: (e: React.PointerEvent) => {
+        const origin = touchOrigin.current;
+        touchOrigin.current = null;
+        if (
+          e.pointerType !== "touch" ||
+          !origin ||
+          Math.hypot(e.clientX - origin.x, e.clientY - origin.y) > 12
+        )
+          return;
+        e.stopPropagation();
+        cancelPendingRename();
+        handlers.onOpen(entry);
+      },
+      onPointerCancel: () => {
+        touchOrigin.current = null;
+      },
       onClick: (e: React.MouseEvent) => {
         e.stopPropagation();
         handlers.onSelect(entry);
@@ -67,7 +88,12 @@ const FinderItems = forwardRef<HTMLDivElement, FinderItemsProps>(
         <div
           className={className}
           onClick={() => {
-            if (selectedId !== entry.id) return;
+            if (
+              selectedId !== entry.id ||
+              !entry.canRename ||
+              window.matchMedia("(pointer: coarse)").matches
+            )
+              return;
             cancelPendingRename();
             renameTimer.current = setTimeout(
               () => handlers.onStartRename(entry),
@@ -95,7 +121,7 @@ const FinderItems = forwardRef<HTMLDivElement, FinderItemsProps>(
               <div
                 key={entry.id}
                 {...itemProps(entry)}
-                className="flex flex-col items-center gap-1"
+                className="flex min-h-[110px] cursor-default flex-col items-center gap-1 rounded-lg p-2 touch-manipulation"
               >
                 <div
                   className={cn(
@@ -127,7 +153,7 @@ const FinderItems = forwardRef<HTMLDivElement, FinderItemsProps>(
       <div ref={ref} role="listbox" className="flex flex-col">
         <div className="flex px-2 py-1 text-11 font-medium text-black/50 dark:text-white/50 border-b border-black/5 dark:border-white/10">
           <div className="flex-grow">Name</div>
-          <div className="w-32">Kind</div>
+          <div className="w-32 max-sm:hidden">Kind</div>
         </div>
         {entries.map((entry, index) => {
           const isSelected = selectedId === entry.id;
@@ -136,7 +162,7 @@ const FinderItems = forwardRef<HTMLDivElement, FinderItemsProps>(
               key={entry.id}
               {...itemProps(entry)}
               className={cn(
-                "flex items-center px-2 h-7 rounded-md",
+                "flex items-center px-2 h-9 max-sm:h-12 rounded-md touch-manipulation",
                 isSelected
                   ? selectionColor
                   : index % 2 === 1 && "bg-black/[0.03] dark:bg-white/[0.04]"
@@ -148,7 +174,7 @@ const FinderItems = forwardRef<HTMLDivElement, FinderItemsProps>(
               {renderName(entry, "flex-grow truncate")}
               <div
                 className={cn(
-                  "w-32 truncate",
+                  "w-32 truncate max-sm:hidden",
                   !(isSelected && isFocused) &&
                     "text-black/50 dark:text-white/50"
                 )}

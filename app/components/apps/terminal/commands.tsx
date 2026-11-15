@@ -1,8 +1,9 @@
 import React from "react";
-import { formatMonth, yearsOfExperience } from "../../../lib/utils";
+import { formatMonth } from "../../../lib/utils";
 import { AppId } from "../../../lib/apps";
 import { PortfolioContent } from "../../../lib/content/schema";
 import { parseYearMonth } from "../../../lib/content/dates";
+import { projectPayload } from "../../../lib/project-navigation";
 
 export interface CommandContext {
   openApp: (id: AppId, payload?: string) => void;
@@ -59,6 +60,28 @@ const openTargets: Record<
   },
 };
 
+const availableTargets = (content: PortfolioContent): typeof openTargets => ({
+  ...Object.fromEntries(
+    Object.entries(openTargets).filter(([target]) => {
+      if (target === "cv") return !!content.profile.cv;
+      if (target === "mail") return !!content.profile.email;
+      if (target === "github" || target === "linkedin" || target === "website")
+        return !!content.profile.links[target];
+      return true;
+    })
+  ),
+  ...Object.fromEntries(
+    content.projects.map((project) => [
+      project.id.toLowerCase(),
+      {
+        label: project.name,
+        open: ({ openApp }: CommandContext) =>
+          openApp("finder", projectPayload(project.id)),
+      },
+    ])
+  ),
+});
+
 const Accent: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <span className="text-cyan-400">{children}</span>
 );
@@ -82,9 +105,10 @@ export const commands: Record<string, Command> = {
     run: (_, { content: { profile } }) => `${profile.name} - ${profile.role}`,
   },
   experience: {
-    description: "where I have worked",
+    description: "project roles and experience",
     run: (_, { content: { experiences } }) => (
       <div>
+        {!experiences.length && "My work is in projects. Try `open projects`."}
         {experiences.map((experience) => (
           <div key={experience.id}>
             <Accent>{experience.company}</Accent> - {experience.role}{" "}
@@ -129,6 +153,7 @@ export const commands: Record<string, Command> = {
     description: "honors and awards",
     run: (_, { content: { awards } }) => (
       <div>
+        {!awards.length && "No awards listed."}
         {awards.map((award) => (
           <div key={award.title}>
             <Accent>{award.title}</Accent> - {award.event}{" "}
@@ -142,16 +167,25 @@ export const commands: Record<string, Command> = {
     description: "how to reach me",
     run: (_, { content: { profile } }) => (
       <div className="grid grid-cols-[90px_1fr]">
-        <Accent>email</Accent>
-        <a href={`mailto:${profile.email}`} className="underline">
-          {profile.email}
-        </a>
+        {profile.email && (
+          <>
+            <Accent>email</Accent>
+            <a href={`mailto:${profile.email}`} className="underline">
+              {profile.email}
+            </a>
+          </>
+        )}
         {Object.entries(profile.links)
           .filter(([name, url]) => url && name !== "repository")
           .map(([name, url]) => (
             <React.Fragment key={name}>
               <Accent>{name}</Accent>
-              <a href={url} target="_blank" className="underline">
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline break-all"
+              >
                 {url}
               </a>
             </React.Fragment>
@@ -160,11 +194,11 @@ export const commands: Record<string, Command> = {
     ),
   },
   open: {
-    description: "open an app or link, e.g. `open cv`",
+    description: "open an app or link, e.g. `open projects`",
     run: ([target], context) => {
       if (!target)
-        return `usage: open <${Object.keys(openTargets).join(" | ")}>`;
-      const app = openTargets[target.toLowerCase()];
+        return `usage: open <${Object.keys(availableTargets(context.content)).join(" | ")}>`;
+      const app = availableTargets(context.content)[target.toLowerCase()];
       if (!app)
         return `The file /Users/${context.content.profile.username}/${target} does not exist.`;
       app.open(context);
@@ -173,12 +207,12 @@ export const commands: Record<string, Command> = {
   },
   ls: {
     description: "list files",
-    run: () => (
+    run: (_, { content }) => (
       <div className="flex flex-wrap gap-x-6">
         {Object.keys(files).map((file) => (
           <span key={file}>{file}</span>
         ))}
-        <span>CV.pdf</span>
+        {content.profile.cv && <span>CV.pdf</span>}
         <span className="text-blue-400 font-bold">projects</span>
       </div>
     ),
@@ -187,7 +221,8 @@ export const commands: Record<string, Command> = {
     description: "read a file, e.g. `cat about.txt`",
     run: ([file], context) => {
       if (!file) return "usage: cat <file>";
-      if (file === "CV.pdf") return "cat: CV.pdf: binary file. Try `open cv`";
+      if (file === "CV.pdf" && context.content.profile.cv)
+        return "cat: CV.pdf: binary file. Try `open cv`";
       if (file.replace(/\/$/, "") === "projects")
         return "cat: projects: Is a directory";
       return (
@@ -198,7 +233,7 @@ export const commands: Record<string, Command> = {
   neofetch: {
     description: "system information",
     run: (_, { content: { profile, system } }) => (
-      <div className="flex gap-6">
+      <div className="flex flex-wrap gap-4">
         <pre className="text-green-400 leading-tight">
           {`        .:'
     __ :'__
@@ -221,9 +256,7 @@ export const commands: Record<string, Command> = {
             <Accent>Host:</Accent> {profile.name}
           </div>
           <div>
-            <Accent>Uptime:</Accent>{" "}
-            {yearsOfExperience(parseYearMonth(profile.careerStart))}+ years of
-            shipping
+            <Accent>Focus:</Accent> {profile.role}
           </div>
           <div>
             <Accent>Shell:</Accent> zsh
@@ -294,5 +327,11 @@ export const runCommand = (input: string, context: CommandContext) => {
 export const completions = [
   ...Object.keys(commands),
   ...Object.keys(openTargets).map((target) => `open ${target}`),
+  ...Object.keys(files).map((file) => `cat ${file}`),
+];
+
+export const getCompletions = (content: PortfolioContent) => [
+  ...Object.keys(commands),
+  ...Object.keys(availableTargets(content)).map((target) => `open ${target}`),
   ...Object.keys(files).map((file) => `cat ${file}`),
 ];

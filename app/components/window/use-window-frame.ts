@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MENUBAR_HEIGHT } from "../../lib/constants";
+import { MENUBAR_HEIGHT, MOBILE_BREAKPOINT } from "../../lib/constants";
 import {
   Frame,
   ResizeDirection,
@@ -43,6 +43,9 @@ export function useWindowFrame({
   );
   const [resizeDirection, setResizeDirection] =
     useState<ResizeDirection | null>(null);
+  const [isCompact, setIsCompact] = useState(
+    () => window.innerWidth < MOBILE_BREAKPOINT
+  );
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const mode: FrameMode = isFullscreen
@@ -66,12 +69,17 @@ export function useWindowFrame({
   }, [mode]);
 
   useEffect(() => {
-    const handleViewportResize = () =>
+    const handleViewportResize = () => {
+      const compact = window.innerWidth < MOBILE_BREAKPOINT;
+      setIsCompact(compact);
       setFrame((current) =>
-        mode === "normal"
-          ? clampToDesktop(current, getDesktopSize())
-          : getModeFrame(mode, restoreFrame.current)
+        compact && mode !== "fullscreen"
+          ? getZoomFrame()
+          : mode === "normal"
+            ? clampToDesktop(current, getDesktopSize())
+            : getModeFrame(mode, restoreFrame.current)
       );
+    };
 
     window.addEventListener("resize", handleViewportResize);
     return () => window.removeEventListener("resize", handleViewportResize);
@@ -112,6 +120,7 @@ export function useWindowFrame({
     moveTo,
     isTransitioning,
     isResizing: resizeDirection !== null,
+    isCompact,
     startResize: setResizeDirection,
   };
 }

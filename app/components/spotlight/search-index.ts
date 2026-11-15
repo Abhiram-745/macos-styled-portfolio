@@ -21,22 +21,32 @@ export const buildSearchIndex = ({
   projects,
   experiences,
 }: PortfolioContent): SearchResult[] => [
-  ...apps.map<SearchResult>((app) => ({
-    id: `app-${app.id}`,
-    title: app.name,
-    subtitle: "Application",
-    category: "Applications",
-    icon: app.icon,
-    target: { type: "app", app: app.id },
-  })),
-  {
-    id: "cv",
-    title: "CV.pdf",
-    subtitle: "Documents",
-    category: "Documents",
-    icon: PdfIcon,
-    target: { type: "app", app: "preview" },
-  },
+  ...apps
+    .filter(
+      (app) =>
+        (app.id !== "mail" || profile.email) &&
+        (app.id !== "preview" || profile.cv)
+    )
+    .map<SearchResult>((app) => ({
+      id: `app-${app.id}`,
+      title: app.name,
+      subtitle: "Application",
+      category: "Applications",
+      icon: app.icon,
+      target: { type: "app", app: app.id },
+    })),
+  ...(profile.cv
+    ? [
+        {
+          id: "cv",
+          title: "CV.pdf",
+          subtitle: "Documents",
+          category: "Documents",
+          icon: PdfIcon,
+          target: { type: "app" as const, app: "preview" as const },
+        },
+      ]
+    : []),
   ...projects.map<SearchResult>((project) => ({
     id: `project-${project.id}`,
     title: project.name,
@@ -45,7 +55,7 @@ export const buildSearchIndex = ({
       .join(" · "),
     category: "Projects",
     icon: FolderIcon,
-    target: { type: "app", app: "finder", payload: `projects/${project.id}` },
+    target: { type: "app", app: "finder", payload: `project:${project.id}` },
   })),
   ...experiences.map<SearchResult>((experience) => ({
     id: `experience-${experience.id}`,

@@ -28,7 +28,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
     <div
       className={cn(
         "handle relative h-[52px] shrink-0 flex items-center gap-2.5 px-2.5 transition-opacity duration-200",
-        hasControls && "pl-[92px]",
+        hasControls && "pl-[137px] sm:pl-[92px]",
         !isFocused && "[&>*]:opacity-50",
         className
       )}
@@ -38,7 +38,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         <div
           className={cn(
             "text-15 font-bold truncate",
-            centerTitle && "absolute inset-x-28 text-center pointer-events-none"
+            centerTitle &&
+              "absolute left-[137px] right-3 sm:inset-x-28 text-center pointer-events-none"
           )}
         >
           {title}
@@ -60,7 +61,7 @@ export const ToolbarGroup: React.FC<{
 }> = ({ children, className }) => (
   <div
     className={cn(
-      "flex items-center h-9 rounded-full px-1 bg-white/80 dark:bg-white/[0.07] shadow-[0_1px_3px_rgba(0,0,0,0.12),inset_0_0_0_0.5px_rgba(0,0,0,0.12)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3),inset_0_0.5px_0_rgba(255,255,255,0.15),inset_0_0_0_0.5px_rgba(255,255,255,0.08)] backdrop-blur-xl",
+      "flex shrink-0 items-center h-11 sm:h-9 rounded-full px-1 bg-white/80 dark:bg-white/[0.07] shadow-[0_1px_3px_rgba(0,0,0,0.12),inset_0_0_0_0.5px_rgba(0,0,0,0.12)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.3),inset_0_0.5px_0_rgba(255,255,255,0.15),inset_0_0_0_0.5px_rgba(255,255,255,0.08)] backdrop-blur-xl",
       className
     )}
   >
@@ -87,10 +88,11 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
 }) => (
   <button
     title={title}
+    aria-label={title}
     onClick={onClick}
     disabled={disabled}
     className={cn(
-      "h-7 min-w-7 px-1.5 rounded-full flex items-center justify-center text-black/75 dark:text-white/85 enabled:active:bg-black/10 dark:enabled:active:bg-white/15 disabled:opacity-30",
+      "h-11 min-w-11 sm:h-7 sm:min-w-7 px-1.5 rounded-full flex items-center justify-center text-black/75 dark:text-white/85 enabled:active:bg-black/10 dark:enabled:active:bg-white/15 disabled:opacity-30",
       isActive && "bg-black/10 dark:bg-white/15",
       className
     )}

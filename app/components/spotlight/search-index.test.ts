@@ -24,12 +24,24 @@ describe("spotlight search", () => {
     expect(titles("linkedin")).toEqual([]);
   });
 
-  it("opens projects in Finder with the project selected", () => {
+  it("omits CV and Mail when no contact information was supplied", () => {
+    const content = createContent();
+    delete content.profile.email;
+    delete content.profile.cv;
+    const results = buildSearchIndex(content);
+    expect(results.find((result) => result.id === "cv")).toBeUndefined();
+    expect(
+      results.find((result) => result.id === "app-preview")
+    ).toBeUndefined();
+    expect(results.find((result) => result.id === "app-mail")).toBeUndefined();
+  });
+
+  it("opens project detail views in Finder", () => {
     const [rocket] = searchIndex(index, "rocket");
     expect(rocket.target).toEqual({
       type: "app",
       app: "finder",
-      payload: "projects/rocket",
+      payload: "project:rocket",
     });
   });
 });

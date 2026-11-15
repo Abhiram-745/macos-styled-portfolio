@@ -1,212 +1,135 @@
 {
   "site": {
-    "title": "r0shish",
-    "description": "Portfolio Website"
+    "title": "Abhiram Kakarla \u00b7 building AI products",
+    "description": "I build things I want to use, from AI cofounders to revision tools and desktop agents. Explore Pythe, Blertly, Pico and Vistara AI on my desktop."
   },
   "profile": {
-    "name": "Roshish Shrestha",
-    "initials": "RS",
-    "username": "roshish",
-    "role": "Software Engineer",
-    "summary": "Software engineer specializing in developing innovative solutions across mobile, web and backend.",
+    "name": "Abhiram Kakarla",
+    "initials": "AK",
+    "username": "abhiram",
+    "role": "building AI products",
+    "summary": "I build things I want to use, from AI cofounders to revision tools and desktop agents.",
     "intro": [
-      "I mostly work with Flutter on mobile and Golang on the backend, with a bit of React on the web. Here you'll find notes on where I've worked, what I work with and a few things I'm proud of."
+      "Currently building Pythe with Daiwik. Built Blertly with friends, Vistara AI, and Pico/Halo."
     ],
-    "focus": ["Flutter", "Golang", "React"],
-    "careerStart": "2022-02",
-    "email": "hello@rosh.sh",
-    "cv": "/CV.pdf",
+    "focus": ["AI products", "React", "TypeScript", "Desktop agents"],
     "links": {
-      "website": "https://rosh.sh",
-      "github": "https://www.github.com/r0shish",
-      "linkedin": "https://www.linkedin.com/in/r0shish",
-      "repository": "https://github.com/R0shish/macos-styled-portfolio"
+      "github": "https://github.com/Abhiram-745",
+      "repository": "https://github.com/Abhiram-745/macos-styled-portfolio"
     }
   },
-  "experiences": [
-    {
-      "id": "tutero",
-      "company": "Tutero Pty Ltd",
-      "role": "Software Engineer",
-      "link": "https://www.tutero.com",
-      "start": "2025-10",
-      "description": "Worked across both frontend and backend to fix production issues and deliver complete features. Built both web and mobile applications maintaining separate projects for web and mobile while reusing core logic where possible and ensuring consistent behavior across platforms. Designed, developed, and integrated Golang-based microservices, focusing on clean architecture, performance, and reliability.",
-      "projects": ["Tutoring Platform", "Tutero Mobile App"]
-    },
-    {
-      "id": "swifttech",
-      "company": "Swift Technology | IME Group",
-      "role": "Software Engineer",
-      "link": "https://swifttech.com.np",
-      "start": "2024-09",
-      "end": "2025-10",
-      "description": "Migrated legacy Android (Java/Kotlin) and iOS (UIKit/SwiftUI) applications and native libraries to Flutter. Worked with sensitive financial data, ensuring accuracy, security, and compliance with industry standards. Worked on a multi-country remittance application with dynamic country-specific behavior, designing a scalable architecture across multiple layers to support country-based variations and future extensibility.",
-      "projects": ["IME Remit", "JME Remittance"]
-    },
-    {
-      "id": "slashplus",
-      "company": "Slash Plus",
-      "role": "Software Engineer",
-      "link": "http://slashplus.com.np",
-      "start": "2023-06",
-      "end": "2024-09",
-      "description": "Worked on revamping and enhancing existing legacy applications, introducing new features and increasing overall performance using Flutter. Worked with native languages (Kotlin & Swift) to create packages with native features like remote shell execution with root access, a custom printer library, iOS Object Capture API etc.",
-      "projects": [
-        "Signage Plus",
-        "Digibuzz",
-        "Blue Bus Ticketing",
-        "GPS Sewa",
-        "Sajha Plus"
-      ]
-    },
-    {
-      "id": "softechtonic",
-      "company": "Softechtonic",
-      "role": "Junior Flutter Developer",
-      "link": "https://softechtonic.net",
-      "start": "2022-02",
-      "end": "2023-06",
-      "description": "Specialized in the analysis, design, and development of mobile applications for schools. Identified the needs and requirements of educational institutions and created user-friendly and efficient apps to support teaching and learning. Worked through the full lifecycle of mobile app development, from concept to launch.",
-      "projects": []
-    }
-  ],
+  "experiences": [],
   "projects": [
     {
-      "id": "tutero-platform",
-      "name": "Tutoring Platform",
-      "company": "Tutero",
-      "description": "Web platform for Tutero's tutoring service, backed by Golang microservices.",
-      "tags": ["Web", "Golang"],
-      "link": "https://app.tutero.com"
+      "id": "pythe",
+      "name": "Pythe",
+      "category": "AI cofounder",
+      "company": "AI cofounder",
+      "role": "Co-founder, with Daiwik",
+      "start": "2026-04",
+      "description": "An AI cofounder that learns your startup, researches your market and builds a roadmap, then coordinates a team of agents to work through it.",
+      "tags": ["React", "TypeScript", "Supabase", "MCP"],
+      "links": [
+        {
+          "label": "Website",
+          "href": "https://pythe.app"
+        },
+        {
+          "label": "before0 x Pythe announcement",
+          "href": "https://www.linkedin.com/posts/daiwik-khedekar_10-exceptional-builders-1-villa-introducing-activity-7477098853398151169-yUsP"
+        }
+      ],
+      "paragraphs": [
+        "I'm building Pythe with Daiwik because getting an idea built is only part of starting a company. Figuring out what to work on, finding customers and actually growing it is the harder part.",
+        "You bring your idea or the company you've already started. We're developing Pythe to learn the context, research competitors and put together a roadmap with daily tasks. Pytheus, the AI cofounder, is designed to delegate work to a team of AI employees instead of leaving you with another list of advice.",
+        "We're building the agent system around employees with their own virtual computers, shared startup context and connections to the tools you already use. These features are being developed for launch. I've also made the dynamic product demo videos on the landing page myself."
+      ],
+      "announcement": {
+        "title": "before0 x Pythe",
+        "description": "Daiwik announced a before0 x Pythe residency and invited builders to apply: 10 builders in one villa, with food and travel expenses covered.",
+        "href": "https://www.linkedin.com/posts/daiwik-khedekar_10-exceptional-builders-1-villa-introducing-activity-7477098853398151169-yUsP"
+      },
+      "result": "In development, getting ready for launch."
     },
     {
-      "id": "tutero-mobile",
-      "name": "Tutero Mobile App",
-      "company": "Tutero",
-      "description": "Mobile app for Tutero sharing core logic with the web platform for consistent behavior across platforms.",
-      "tags": ["Mobile", "iOS", "Android"],
-      "link": "https://apps.apple.com/us/app/tutero/id1633367352"
+      "id": "blertly",
+      "name": "Blertly",
+      "category": "AI revision",
+      "company": "AI revision",
+      "role": "Co-founder, with Dhrishiv Panjabi",
+      "start": "2025-09",
+      "description": "An AI study app for GCSE and A-Level students, built around active recall, exam practice and feedback you can actually use.",
+      "tags": ["React", "TypeScript", "Tailwind CSS", "ElevenLabs"],
+      "links": [
+        {
+          "label": "Website",
+          "href": "https://blertly.app"
+        }
+      ],
+      "paragraphs": [
+        "Blertly is one of my first startups, built with friends including my co-founder Dhrishiv. It's an AI revision app for students who want to do more than reread notes and hope they remember them.",
+        "The main loop is simple: read a topic, close the notes and blurt out what you remember. The AI checks your answer against the important points, shows you what you missed and helps you work on the gaps.",
+        "Alongside blurting, there are revision notes, exam questions with AI marking, handwritten-answer marking and a voice tutor. The aim is to keep learning, practice and feedback in one place."
+      ],
+      "result": "Reached 500 users \u00b7 Reported November 2026."
     },
     {
-      "id": "ime-remit",
-      "name": "IME Remit",
-      "company": "Swift Technology",
-      "description": "Multi-country remittance application with dynamic country-specific behavior, migrated from native Android and iOS to Flutter.",
-      "tags": ["Flutter", "Fintech"]
+      "id": "pico",
+      "name": "Pico",
+      "category": "Desktop agent",
+      "company": "Desktop agent",
+      "role": "Personal side project; also called Halo",
+      "description": "An AI desktop agent that can see your screen and use your Windows computer through mouse and keyboard actions.",
+      "tags": ["JavaScript", "Node.js", "React", "nut.js"],
+      "links": [
+        {
+          "label": "Website",
+          "href": "https://pico-kohl-two.vercel.app"
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/Abhiram-745/pico"
+        }
+      ],
+      "paragraphs": [
+        "Pico, also called Halo, is a personal project exploring what it looks like for an AI agent to use a laptop the way a person would.",
+        "It takes screenshots, uses a model to work out the next action, then controls the mouse and keyboard through a local Node.js bridge. A floating interface keeps the agent close to the work instead of putting everything in another browser tab.",
+        "I built it to experiment with computer use and tested it on computer and operating-system tasks. The project is open source, with a Windows download and the code on GitHub."
+      ],
+      "result": "Public source code and a Windows download."
     },
     {
-      "id": "jme-remittance",
-      "name": "JME Remittance",
-      "company": "Swift Technology",
-      "description": "Remittance app handling sensitive financial data with a focus on accuracy, security and compliance.",
-      "tags": ["Flutter", "Fintech"],
-      "link": "https://play.google.com/store/apps/details?id=com.remit.jmecustomer"
-    },
-    {
-      "id": "signage-plus",
-      "name": "Signage Plus",
-      "company": "Slash Plus",
-      "description": "Revamped legacy application with new features and native Kotlin packages.",
-      "tags": ["Flutter", "Kotlin"],
-      "link": "https://signageplus.net"
-    },
-    {
-      "id": "digibuzz",
-      "name": "Digibuzz",
-      "company": "Slash Plus",
-      "description": "Revamped legacy application with new features in Flutter.",
-      "tags": ["Flutter"],
-      "link": "https://digibuzznp.com"
-    },
-    {
-      "id": "blue-bus",
-      "name": "Blue Bus Ticketing",
-      "company": "Slash Plus",
-      "description": "Bus ticketing application built with Flutter at Slash Plus.",
-      "tags": ["Flutter"],
-      "link": "https://play.google.com/store/apps/details?id=com.slashplus.bluebusticketing"
-    },
-    {
-      "id": "gps-sewa",
-      "name": "GPS Sewa",
-      "company": "Slash Plus",
-      "description": "Mobile application built with Flutter at Slash Plus.",
-      "tags": ["Flutter"],
-      "link": "https://play.google.com/store/apps/details?id=com.slashplus.gpssewa"
-    },
-    {
-      "id": "sajha-plus",
-      "name": "Sajha Plus",
-      "company": "Slash Plus",
-      "description": "Mobile application built with Flutter at Slash Plus.",
-      "tags": ["Flutter"],
-      "link": "https://play.google.com/store/apps/details?id=com.slashplus.sajhaplus.sajha_plus"
-    },
-    {
-      "id": "skylearn",
-      "name": "SkyLearn",
-      "company": "NASA Space Apps",
-      "description": "Built in 36 hours for the challenge \"Eclipses: Perspective is Everything\". Global Nominee.",
-      "tags": ["Flutter", "Hackathon"],
-      "link": "https://www.spaceappschallenge.org/2023/find-a-team/herald-rangers/?tab=project"
-    },
-    {
-      "id": "trashfree",
-      "name": "TrashFree",
-      "company": "Ace Ignite Hackathon",
-      "description": "Waste management app built in 36 hours. 2nd Runner Up at Ace Ignite Hackathon.",
-      "tags": ["Flutter", "Hackathon"],
-      "link": "https://devfolio.co/projects/trashfree-0525"
-    },
-    {
-      "id": "portfolio",
-      "name": "macOS Portfolio",
-      "company": "Personal",
-      "description": "This website. A macOS styled portfolio built with Next.js.",
-      "tags": ["Next.js", "Framer Motion"],
-      "link": "https://github.com/R0shish/macos-styled-portfolio"
+      "id": "vistara",
+      "name": "Vistara AI",
+      "category": "Study planning",
+      "company": "Study planning",
+      "role": "Founder",
+      "start": "2025-08",
+      "description": "A study-planning project I started to help balance school with everything I wanted to build outside it.",
+      "tags": ["Study planning", "Student tools"],
+      "links": [],
+      "paragraphs": [
+        "I started Vistara AI because I found it hard to balance school, extracurriculars, sport and the things I enjoyed, like coding and shipping projects.",
+        "It was my first study startup, built around a problem I was dealing with myself. It came before Blertly and was an early step from learning to code to building something other people could use."
+      ],
+      "result": "Reached 100 users \u00b7 Reported November 2026."
     }
   ],
-  "awards": [
-    {
-      "title": "WLV Exchange Fellowship 2024",
-      "event": "Herald College Kathmandu",
-      "date": "Feb 2024",
-      "description": "A funded academic trip to the University of Wolverhampton, United Kingdom. One of the 9 students selected among students from Final Year BIT, BIBM and Masters of Herald College Kathmandu.",
-      "link": "https://heraldcollege.edu.np/wlv-exchange-fellowship-2024-a-week-of-academic-adventure"
-    },
-    {
-      "title": "Global Nominees",
-      "event": "NASA International Space Apps Challenge",
-      "date": "Oct 2023",
-      "description": "Developed a mobile application (frontend and backend) called \"SkyLearn\" on the challenge \"Eclipses: Perspective is Everything\" within a tight deadline of 36 hours.",
-      "link": "https://www.spaceappschallenge.org/2023/find-a-team/herald-rangers/?tab=project"
-    },
-    {
-      "title": "2nd Runner Up",
-      "event": "Ace Ignite Hackathon",
-      "date": "Nov 2022",
-      "description": "Developed a mobile application (frontend and backend) for waste management called \"TrashFree\" within a tight deadline of 36 hours.",
-      "link": "https://youtu.be/7h1ERHh1tk4"
-    }
-  ],
+  "awards": [],
   "skills": {
-    "Languages": ["Dart", "Golang", "JavaScript", "Kotlin", "Swift"],
-    "Frameworks": [
-      "Flutter",
-      "ReactJS",
-      "NodeJS",
-      "Framer Motion",
-      "Socket.io"
-    ],
-    "Databases": ["Firebase", "MongoDB", "PostgreSQL", "CockroachDB", "Neo4j"],
-    "Architecture": ["BLoC", "Riverpod", "Clean Architecture", "MVP"],
-    "Tools": ["CI/CD", "Kubectl", "Telepresence"]
+    "Building with": ["React", "TypeScript", "JavaScript", "Node.js"],
+    "Tools I have used": [
+      "Supabase",
+      "MCP",
+      "Tailwind CSS",
+      "ElevenLabs",
+      "nut.js"
+    ]
   },
   "system": {
-    "hostname": "portfolio",
+    "hostname": "abhiram",
     "defaultAppearance": "dark",
-    "defaultWallpaper": "synthwave",
+    "defaultWallpaper": "ocean",
     "wallpapers": [
       {
         "id": "synthwave",
@@ -242,8 +165,8 @@
       }
     ],
     "welcome": {
-      "title": "Welcome 👋",
-      "body": "Double-click an icon to open it, or press ⌘K to search."
+      "title": "Hey, I\u2019m Abhiram \ud83d\udc4b",
+      "body": "Open Projects to see what I\u2019m building. Double-click on desktop, tap on mobile, or press \u2318K to search."
     }
   }
 }

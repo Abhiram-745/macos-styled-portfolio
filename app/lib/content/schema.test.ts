@@ -16,6 +16,31 @@ describe("parsePortfolio", () => {
     expect(content.profile.intro).toEqual([]);
   });
 
+  it("accepts a profile without private contact details or a career timeline", () => {
+    const { email, cv, careerStart, ...profile } = createContent().profile;
+    const content = parsePortfolio({ ...createContent(), profile });
+    expect(content.profile.email).toBeUndefined();
+    expect(content.profile.cv).toBeUndefined();
+    expect(content.profile.careerStart).toBeUndefined();
+  });
+
+  it("keeps launch status, dated milestones and the public announcement explicit", () => {
+    const content = parsePortfolio(portfolio);
+    expect(content.projects).toHaveLength(4);
+    expect(
+      content.projects.find((project) => project.id === "pythe")?.result
+    ).toContain("In development");
+    expect(
+      content.projects.find((project) => project.id === "pythe")?.announcement
+        ?.href
+    ).toMatch(/^https:\/\/www.linkedin.com\//);
+    for (const id of ["blertly", "vistara"]) {
+      expect(
+        content.projects.find((project) => project.id === id)?.result
+      ).toContain("November 2026");
+    }
+  });
+
   it("reports every invalid field with its path", () => {
     const invalid = {
       ...portfolio,
